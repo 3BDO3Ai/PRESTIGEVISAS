@@ -16,10 +16,12 @@ const priceData = [
   { productValue: 2495.00, transferAmount: 1800.00, firstPayment: 625.00 },
 ];
 
+import { formatCurrencyEN } from '@/lib/financeCalculations';
+
 const PriceList = ({ onSelect }: { onSelect?: (item: { productValue: number; transferAmount: number; firstPayment: number }) => void }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const format = (v: number) => new Intl.NumberFormat("ar-SA", { style: "currency", currency: "SAR" }).format(v);
+  const format = (v: number) => formatCurrencyEN(v);
 
   function handleSelect(index: number) {
     setSelectedIndex(index);
@@ -46,7 +48,7 @@ const PriceList = ({ onSelect }: { onSelect?: (item: { productValue: number; tra
               key={index}
               onClick={() => handleSelect(index)}
               className={`grid grid-cols-4 items-center p-4 border-b border-gray-200 last:border-b-0 text-right w-full text-gray-900 focus:outline-none transition-colors ${
-                selected ? 'bg-accent/10' : 'hover:bg-gray-50'
+                selected ? 'bg-accent/15 ring-1 ring-accent/25' : 'hover:bg-gray-50'
               }`}
               aria-pressed={selected}
             >
@@ -54,8 +56,12 @@ const PriceList = ({ onSelect }: { onSelect?: (item: { productValue: number; tra
               <div className="pr-4 text-gray-700">{format(item.transferAmount)}</div>
               <div className="pr-4 text-gray-700">{format(item.firstPayment)}</div>
               <div className="pr-4">
-                <span className={`inline-block py-2 px-4 rounded-full text-sm font-semibold ${selected ? 'bg-accent text-white' : 'bg-gray-100 text-gray-700'}`}>
-                  {selected ? 'محدد' : 'اختر'}
+                <span className={`inline-block py-3 px-6 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer ${
+                  selected 
+                    ? 'bg-accent-600 text-white shadow-2xl ring-4 ring-accent/30 scale-105' 
+                    : 'bg-gradient-to-r from-accent to-accent/80 text-white shadow-md hover:shadow-lg hover:scale-105 hover:from-accent/90 hover:to-accent'
+                }`}>
+                  {selected ? '✓ محدد' : 'اختر'}
                 </span>
               </div>
             </button>

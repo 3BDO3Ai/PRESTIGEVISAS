@@ -70,10 +70,11 @@ function roundUpToNearestQuarter(value: number): number {
 }
 
 // Get values from price table
-function getPriceTableValues(productValue: number): { transfer: number; down: number; months: number } {
+// Returns transfer, down, months and the product value from the table when available
+function getPriceTableValues(productValue: number): { product: number; transfer: number; down: number; months: number } {
   const entry = PRICE_TABLE.find(item => item.product === productValue);
   if (entry) {
-    return { transfer: entry.transfer, down: entry.down, months: entry.months };
+    return { product: entry.product, transfer: entry.transfer, down: entry.down, months: entry.months };
   }
   
   // If exact match not found, calculate based on 25% down payment pattern
@@ -87,14 +88,14 @@ function getPriceTableValues(productValue: number): { transfer: number; down: nu
     // Below minimum, use similar ratio as first entry
     const ratio = sortedTable[0].transfer / sortedTable[0].product;
     const transfer = Math.round(productValue * ratio);
-    return { transfer, down, months: sortedTable[0].months };
+    return { product: productValue, transfer, down, months: sortedTable[0].months };
   }
   
   if (productValue > sortedTable[sortedTable.length - 1].product) {
     // Above maximum, use similar ratio as last entry
     const ratio = sortedTable[sortedTable.length - 1].transfer / sortedTable[sortedTable.length - 1].product;
     const transfer = Math.round(productValue * ratio);
-    return { transfer, down, months: sortedTable[sortedTable.length - 1].months };
+    return { product: productValue, transfer, down, months: sortedTable[sortedTable.length - 1].months };
   }
   
   // Interpolate between two nearest values
@@ -112,8 +113,9 @@ function getPriceTableValues(productValue: number): { transfer: number; down: nu
   // Linear interpolation
   const ratio = (productValue - lower.product) / (upper.product - lower.product);
   const transfer = Math.round(lower.transfer + ratio * (upper.transfer - lower.transfer));
-  
-  return { transfer, down, months: lower.months };
+
+  // When not an exact table match, return the given productValue as the product
+  return { product: productValue, transfer, down, months: lower.months };
 }
 
 // Simple commission calculation - no hardcoded values for specific amounts
@@ -129,12 +131,22 @@ export function defaultCommissionFn(
 
 // Currency formatter for Arabic SAR
 export function formatCurrency(amount: number): string {
+  // If amount is whole number (e.g. 350.00), show no decimals; otherwise show two decimals
+  const isWhole = Math.abs(amount - Math.round(amount)) < 0.005; // tolerance for floating errors
+  const fractionDigits = isWhole ? 0 : 2;
+
   return new Intl.NumberFormat('ar-SA', {
     style: 'currency',
     currency: 'SAR',
-    minimumFractionDigits: 2,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    // Force Latin digits (EN) even when using Arabic locale
+    numberingSystem: 'latn',
   }).format(amount);
 }
+
+// Alias that explicitly documents intention: formatted using Arabic locale but Latin digits
+export const formatCurrencyEN = formatCurrency;
 
 // Main calculation function
 export function calculate(
@@ -160,6 +172,8 @@ export function calculate(
   const downPayment = priceTableValues.down;
   const months = priceTableValues.months; // عدد الأشهر from table
   const baseTransferAmount = priceTableValues.transfer; // المبلغ المطلوب تحويله from table
+  // إجمالي الأقساط should come from the price table 'product' column when available
+  const tableProductValue = priceTableValues.product;
   
   if (downPayment >= productValue) {
     throw new Error('Down payment cannot exceed product value');
@@ -167,22 +181,18 @@ export function calculate(
 
   // Transfer amount handling based on down payment choice
   const deductFromTransfer = downPaymentChoice === 'deduct';
+  // Calculate total installments based on the price table product value.
+  // If the product was selected from the table, use that table product value. Otherwise fall back to the provided productValue.
+  let totalInstallments: number = tableProductValue ?? productValue;
 
-  // Calculate total installments based on payment choice:
-  let totalInstallments: number;
-  if (deductFromTransfer) {
-    // When deducting from transfer: total installments = product value
-    totalInstallments = productValue;
-  } else {
-    // When paying upfront: total installments = transfer amount + commission
-    // Commission = productValue - transferAmount - downPayment
-    const commission = productValue - baseTransferAmount - downPayment;
-    totalInstallments = baseTransferAmount + commission;
-  }
-  
+  // If the down payment is deducted from the transfer, we reduce the number of months by 1
+  // (e.g., usually 4 months; if deducting from transfer, pay remaining over 3 months).
+  // Ensure months never become less than 1 to avoid division by zero.
+  const effectiveMonths = Math.max(1, months - (deductFromTransfer ? 1 : 0));
+
   // إجمالي الأقساط = القسط الشهري * عدد الأشهر
   // So: القسط الشهري = إجمالي الأقساط / عدد الأشهر
-  const rawMonthlyInstallment = totalInstallments / months;
+  const rawMonthlyInstallment = totalInstallments / effectiveMonths;
   const monthlyInstallment = parseFloat(roundUpToNearestQuarter(rawMonthlyInstallment).toFixed(2));
 
   // Commission = difference between what we charge vs what we transfer
@@ -204,7 +214,7 @@ export function calculate(
     downPayment,
     totalInstallments,
     monthlyInstallment,
-    months,
+    months: effectiveMonths,
     commission,
     transferAmount,
     notes,

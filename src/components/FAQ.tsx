@@ -40,10 +40,10 @@ const FAQ = () => {
     <div id="faq" className="max-w-4xl mx-auto my-16">
       <div className="bg-white border border-gray-200 rounded-2xl shadow-lg">
         <AccordionItem title="هل أحتاج دفعة أولى؟">
-          <p>يعتمد على قيمة المنتج والمزود. يمكنك اختيار دفع دفعة أولى أو خصمها من مبلغ التمويل.</p>
+          <p>حسب المزوّد: &quot;تابي&quot; يسمح بدون دفعة أولى، أما &quot;تمارا&quot; فتتطلب دفعة أولى.</p>
         </AccordionItem>
         <AccordionItem title="كم عدد الأقساط؟">
-          <p>يمكنك اختيار عدد الأقساط المناسب لك من 3 إلى 12 شهرًا.</p>
+          <p>عادة 4 أشهر، وإذا سددت الدفعة الأولى يُقسّم المتبقي على 3 أشهر.</p>
         </AccordionItem>
         <AccordionItem title="كيف يتم التحويل؟">
           <p>بعد إرسال الطلب عبر واتساب، سيتم التواصل معك لتأكيد المعلومات وإتمام عملية التحويل بشكل آمن وسريع.</p>

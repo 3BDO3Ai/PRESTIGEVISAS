@@ -4,17 +4,18 @@ import Image from 'next/image';
 const Hero = () => {
 
   return (
-    <section id="home" className="relative w-full pt-20 pb-16 bg-gradient-to-br from-white via-light/20 to-accent/5 overflow-hidden">
+  <section id="home" className="relative w-full pt-20 pb-8 bg-gradient-to-br from-white via-light/20 to-accent/5 overflow-hidden">
       {/* Floating decoration elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-20 h-20 bg-accent/10 rounded-full animate-float"></div>
         <div className="absolute top-40 right-20 w-16 h-16 bg-secondary/10 rounded-full animate-float"></div>
-        <div className="absolute bottom-40 left-20 w-12 h-12 bg-accent/20 rounded-full animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 bg-light/30 rounded-full animate-float"></div>
+        {/* reduced bottom decorations to avoid large overflow */}
+        <div className="absolute bottom-12 left-6 w-10 h-10 bg-accent/20 rounded-full animate-float"></div>
+        <div className="absolute bottom-8 right-6 w-16 h-16 bg-light/30 rounded-full animate-float"></div>
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center">
           {/* Logo with animation */}
           <div className="mb-4 transition-all duration-300 animate-slide-up opacity-100">
@@ -46,15 +47,7 @@ const Hero = () => {
               بدون كفيل وبدون شروط
             </p>
 
-            {/* Call-to-action buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-modern bg-accent hover:bg-accent/90 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-                ابدأ الآن
-              </button>
-              <button className="btn-modern bg-white border-2 border-secondary text-secondary hover:bg-secondary hover:text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-                تعرف أكثر
-              </button>
-            </div>
+            {/* Call-to-action buttons removed per request */}
           </div>
         </div>
       </div>

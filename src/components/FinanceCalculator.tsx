@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { calculate, formatCurrency, type CalculationResult } from '@/lib/financeCalculations';
+import { calculate, formatCurrencyEN, type CalculationResult } from '@/lib/financeCalculations';
 
 interface FinanceCalculatorProps {
   initialAmount?: number | undefined;
@@ -119,19 +119,20 @@ const FinanceCalculator = ({ initialAmount }: FinanceCalculatorProps) => {
           <div className="bg-light border border-gray-200 p-3 rounded shadow-sm">
             <p className="text-gray-600">المبلغ المطلوب تحويله</p>
             <p className="text-lg font-bold text-accent" id="transferAmount">
-              {calculationResult ? formatCurrency(calculationResult.transferAmount) : '—'}
+              {calculationResult ? formatCurrencyEN(calculationResult.transferAmount) : '—'}
             </p>
           </div>
           <div className="bg-light border border-gray-200 p-3 rounded shadow-sm">
             <p className="text-gray-600">القسط الشهري</p>
             <p className="text-lg font-bold text-secondary" id="monthlyAmount">
-              {calculationResult ? formatCurrency(calculationResult.monthlyInstallment) : '—'}
+              {calculationResult ? formatCurrencyEN(calculationResult.monthlyInstallment) : '—'}
             </p>
           </div>
           <div className="bg-light border border-gray-200 p-3 rounded shadow-sm">
             <p className="text-gray-600">إجمالي الأقساط</p>
+            {/* Note: إجمالي الأقساط is now sourced from the price table 'قيمة المنتج' column when available */}
             <p className="text-lg font-bold text-secondary" id="totalAmount">
-              {calculationResult ? formatCurrency(calculationResult.totalInstallments) : '—'}
+              {calculationResult ? formatCurrencyEN(calculationResult.totalInstallments) : '—'}
             </p>
           </div>
           <div className="bg-light border border-gray-200 p-3 rounded shadow-sm">
@@ -152,8 +153,8 @@ const FinanceCalculator = ({ initialAmount }: FinanceCalculatorProps) => {
 
       <div className="mt-6 text-right text-gray-700 max-w-4xl mx-auto">
         <p className="mb-2">الاسم: <span className="font-semibold">{name || '—'}</span></p>
-        <p className="mb-2">المبلغ: <span className="font-semibold">{amount ? formatCurrency(parseFloat(amount)) : '—'}</span></p>
-        <p className="mb-2">القسط الشهري: <span className="font-semibold">{calculationResult ? formatCurrency(calculationResult.monthlyInstallment) : '—'}</span></p>
+  <p className="mb-2">المبلغ: <span className="font-semibold">{amount ? formatCurrencyEN(parseFloat(amount)) : '—'}</span></p>
+  <p className="mb-2">القسط الشهري: <span className="font-semibold">{calculationResult ? formatCurrencyEN(calculationResult.monthlyInstallment) : '—'}</span></p>
         <p className="mb-2">عدد الأقساط: <span className="font-semibold">{calculationResult ? `${calculationResult.months} أشهر` : '—'}</span></p>
       </div>
 
@@ -171,7 +172,7 @@ const FinanceCalculator = ({ initialAmount }: FinanceCalculatorProps) => {
             }
 
             const amountNumberForText = parseFloat(amount as unknown as string);
-            const text = `طلب تمويل من فزعة\nالاسم: ${name}\nالمبلغ: ${formatCurrency(amountNumberForText)}\nعدد الأقساط: ${calculationResult.months}\nالقسط الشهري: ${formatCurrency(calculationResult.monthlyInstallment)}\nمبلغ التحويل: ${formatCurrency(calculationResult.transferAmount)}`;
+            const text = `طلب تمويل من فزعة\nالاسم: ${name}\nالمبلغ: ${formatCurrencyEN(amountNumberForText)}\nعدد الأقساط: ${calculationResult.months}\nالقسط الشهري: ${formatCurrencyEN(calculationResult.monthlyInstallment)}\nمبلغ التحويل: ${formatCurrencyEN(calculationResult.transferAmount)}`;
             const phone = '966504428580';
             const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
             window.open(url, '_blank');
