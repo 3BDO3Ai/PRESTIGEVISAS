@@ -181,18 +181,14 @@ export function calculate(
 
   // Transfer amount handling based on down payment choice
   const deductFromTransfer = downPaymentChoice === 'deduct';
+
   // Calculate total installments based on the price table product value.
   // If the product was selected from the table, use that table product value. Otherwise fall back to the provided productValue.
   let totalInstallments: number = tableProductValue ?? productValue;
-
-  // If the down payment is deducted from the transfer, we reduce the number of months by 1
-  // (e.g., usually 4 months; if deducting from transfer, pay remaining over 3 months).
-  // Ensure months never become less than 1 to avoid division by zero.
-  const effectiveMonths = Math.max(1, months - (deductFromTransfer ? 1 : 0));
-
+  
   // إجمالي الأقساط = القسط الشهري * عدد الأشهر
   // So: القسط الشهري = إجمالي الأقساط / عدد الأشهر
-  const rawMonthlyInstallment = totalInstallments / effectiveMonths;
+  const rawMonthlyInstallment = totalInstallments / months;
   const monthlyInstallment = parseFloat(roundUpToNearestQuarter(rawMonthlyInstallment).toFixed(2));
 
   // Commission = difference between what we charge vs what we transfer
@@ -214,7 +210,7 @@ export function calculate(
     downPayment,
     totalInstallments,
     monthlyInstallment,
-    months: effectiveMonths,
+    months,
     commission,
     transferAmount,
     notes,
