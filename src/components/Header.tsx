@@ -11,15 +11,13 @@ interface HeaderProps {
 
 export default function Header({ title }: HeaderProps) {
   const pathname = usePathname();
-  // hide header for admin pages
-  if (pathname && pathname.startsWith('/admin')) return null;
-
   const content = useContent();
   const defaultTitle = title || content.footer.company.name;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
   useEffect(() => {
+    // don't attach scroll listener on admin pages
+    if (pathname && pathname.startsWith('/admin')) return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -27,14 +25,20 @@ export default function Header({ title }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // hide header for admin pages - render nothing if on admin path
+  if (pathname && pathname.startsWith('/admin')) {
+    return null;
+  }
+
   // small helper to play a click animation on the header
   function playClickAnimation() {
+    if (typeof window === 'undefined') return;
     const el = document.querySelector('header');
     if (!el) return;
     el.classList.remove('click-animate');
-  // force reflow
-  // eslint-disable-next-line no-unused-expressions
-  void (el as HTMLElement).offsetWidth;
+    // force reflow
+    // eslint-disable-next-line no-unused-expressions
+    void (el as HTMLElement).offsetWidth;
     el.classList.add('click-animate');
   }
 

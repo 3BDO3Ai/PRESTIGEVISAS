@@ -5,15 +5,20 @@ import { useContent } from '@/content/useContent';
 
 const Footer = () => {
   const pathname = usePathname();
-  if (pathname && pathname.startsWith('/admin')) return null;
   const content = useContent();
+
+  // hide footer for admin pages
+  if (pathname && pathname.startsWith('/admin')) {
+    return null;
+  }
   function playClickAnimation() {
+    if (typeof window === 'undefined') return;
     const el = document.querySelector('footer');
     if (!el) return;
     el.classList.remove('click-animate');
-  // force reflow
-  // eslint-disable-next-line no-unused-expressions
-  void (el as HTMLElement).offsetWidth;
+    // force reflow
+    // eslint-disable-next-line no-unused-expressions
+    void (el as HTMLElement).offsetWidth;
     el.classList.add('click-animate');
   }
   return (
