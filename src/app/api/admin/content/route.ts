@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Supabase storage endpoint and tokens. Prefer environment variables.
-const STORAGE_BASE = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content';
-const PUBLIC_URL = `${STORAGE_BASE}/content.json`;
+// Supabase storage endpoints and tokens. Prefer environment variables.
+const SUPABASE_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co';
+const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`;
+const STORAGE_API_URL = `${SUPABASE_URL}/storage/v1/object/Content/content.json`;
 
 const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjIwNzgsImV4cCI6MjA3MzUzODA3OH0.IyQ7QMtXRVg8R6lSaZIFnKgBZ7KBRMyuC1EaHPRnFR8';
 
@@ -31,7 +32,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Write to Supabase storage using service role key
-    const upsertRes = await fetch(`${STORAGE_BASE}/content.json`, {
+    const upsertRes = await fetch(STORAGE_API_URL, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

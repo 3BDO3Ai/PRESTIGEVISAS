@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const STORAGE_BASE = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content';
-const PUBLIC_URL = `${STORAGE_BASE}/content.json`;
+const SUPABASE_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co';
+const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`;
+const STORAGE_API_URL = `${SUPABASE_URL}/storage/v1/object/Content/content.json`;
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzk2MjA3OCwiZXhwIjoyMDczNTM4MDc4fQ.FCx28QnZO_A3zOiOaB1mbii9CBtyYolrGM7NCxiDQow';
 
@@ -31,7 +32,7 @@ export async function PUT(request: NextRequest) {
     content.priceData = priceData;
 
     // Write updated content back to Supabase storage
-    const upsertRes = await fetch(`${STORAGE_BASE}/content.json`, {
+    const upsertRes = await fetch(STORAGE_API_URL, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

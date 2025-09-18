@@ -223,6 +223,46 @@ export function useContent(): ContentType {
   return content;
 }
 
+// Hook to track loading state separately
+export function useContentLoading(): boolean {
+  const [isLoading, setIsLoading] = useState(() => !_cachedContent);
+
+  useEffect(() => {
+    if (_cachedContent) {
+      setIsLoading(false);
+      return;
+    }
+
+    let mounted = true;
+
+    (async () => {
+      const remote = await fetchRemoteContent();
+      if (remote) {
+        _cachedContent = remote as ContentType;
+        if (mounted) setIsLoading(false);
+        return;
+      }
+
+      // Try dynamic import of local JSON as fallback
+      try {
+        const mod = await import('./content.json');
+        const local = mod?.default ?? mod;
+        _cachedContent = local as ContentType;
+        if (mounted) setIsLoading(false);
+      } catch (e) {
+        // Even with stub, stop loading after attempt
+        if (mounted) setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return isLoading;
+}
+
 function getStub(): ContentType {
   return {
     hero: { title: '', subtitle: '', provider: '', service: '', transfer: '', noGuarantor: '' },
