@@ -1,53 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
 
-const CONTENT_FILE_PATH = path.join(process.cwd(), 'src', 'content', 'content.json');
+// Supabase storage endpoint and tokens. Prefer environment variables.
+const STORAGE_BASE = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content';
+const PUBLIC_URL = `${STORAGE_BASE}/content.json`;
+
+const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjIwNzgsImV4cCI6MjA3MzUzODA3OH0.IyQ7QMtXRVg8R6lSaZIFnKgBZ7KBRMyuC1EaHPRnFR8';
+
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzk2MjA3OCwiZXhwIjoyMDczNTM4MDc4fQ.FCx28QnZO_A3zOiOaB1mbii9CBtyYolrGM7NCxiDQow';
 
 export async function GET() {
   try {
-    const fileContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
-    const content = JSON.parse(fileContent);
+    const res = await fetch(PUBLIC_URL, { headers: { apikey: ANON_KEY } });
+    if (!res.ok) {
+      console.error('Failed fetching remote content:', res.statusText);
+      return NextResponse.json({ error: 'Failed to fetch remote content' }, { status: 502 });
+    }
+    const content = await res.json();
     return NextResponse.json(content);
   } catch (error) {
-    console.error('Error reading content file:', error);
-    return NextResponse.json(
-      { error: 'Failed to read content file' },
-      { status: 500 }
-    );
+    console.error('Error fetching content from Supabase:', error);
+    return NextResponse.json({ error: 'Failed to read content' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
     const newContent = await request.json();
-    
-    // Validate that the content has the required structure
     if (!newContent || typeof newContent !== 'object') {
-      return NextResponse.json(
-        { error: 'Invalid content format' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid content format' }, { status: 400 });
     }
 
-    // Create a backup of the current file
-    try {
-      const currentContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
-      const backupPath = path.join(process.cwd(), 'src', 'content', `content.backup.${Date.now()}.json`);
-      await fs.writeFile(backupPath, currentContent);
-    } catch (backupError) {
-      console.warn('Could not create backup:', backupError);
-    }
+    // Write to Supabase storage using service role key
+    const upsertRes = await fetch(`${STORAGE_BASE}/content.json`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+      },
+      body: JSON.stringify(newContent),
+    });
 
-    // Write the new content
-    await fs.writeFile(CONTENT_FILE_PATH, JSON.stringify(newContent, null, 2), 'utf-8');
+    if (!upsertRes.ok) {
+      const text = await upsertRes.text();
+      console.error('Failed to write content to Supabase:', upsertRes.status, text);
+      return NextResponse.json({ error: 'Failed to update remote content' }, { status: 502 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating content file:', error);
-    return NextResponse.json(
-      { error: 'Failed to update content file' },
-      { status: 500 }
-    );
+    console.error('Error updating remote content:', error);
+    return NextResponse.json({ error: 'Failed to update content' }, { status: 500 });
   }
 }

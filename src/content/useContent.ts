@@ -1,5 +1,3 @@
-import contentData from './content.json';
-
 // Type definitions for our content structure
 export interface ContentType {
   hero: {
@@ -169,6 +167,90 @@ export interface ContentType {
   };
 }
 
+"use client";
+
+import { useEffect, useState } from 'react';
+
+// Remote Supabase public URL for content (from user)
+const REMOTE_CONTENT_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content/content.json';
+
+let _cachedContent: ContentType | null = null;
+
+async function fetchRemoteContent(): Promise<any> {
+  try {
+    const res = await fetch(REMOTE_CONTENT_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Remote content fetch failed: ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.warn('Failed to fetch remote content.', e);
+    return null;
+  }
+}
+
 export function useContent(): ContentType {
-  return contentData as ContentType;
+  const [content, setContent] = useState<ContentType>(() => {
+    if (_cachedContent) return _cachedContent as ContentType;
+    return getStub();
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      const remote = await fetchRemoteContent();
+      if (remote) {
+        _cachedContent = remote as ContentType;
+        if (mounted) setContent(remote as ContentType);
+        return;
+      }
+
+      // Try dynamic import of local JSON as fallback
+      try {
+        const mod = await import('./content.json');
+        const local = mod?.default ?? mod;
+        _cachedContent = local as ContentType;
+        if (mounted) setContent(local as ContentType);
+      } catch (e) {
+        // keep stub
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return content;
+}
+
+function getStub(): ContentType {
+  return {
+    hero: { title: '', subtitle: '', provider: '', service: '', transfer: '', noGuarantor: '' },
+    header: { navigation: { home: 'Home', products: 'Products', about: 'About', contact: 'Contact' } },
+    priceList: {
+      title: 'Prices',
+      description: '',
+      headers: { productValue: 'Product', transferAmount: 'Transfer', firstPayment: 'First', select: 'Select' },
+      buttons: { select: 'Select', selected: 'Selected' },
+      selectedValue: { title: 'Selected', productValue: 'Product', transferAmount: 'Transfer', firstPayment: 'First' },
+    },
+    calculator: {
+      providerSelection: { title: '', tabby: 'Tabby', tamara: 'Tamara' },
+      firstPayment: { title: '', yes: 'Yes', no: 'No' },
+      form: { customerName: '', customerNamePlaceholder: '', productValue: '', currency: '' },
+      summary: { provider: '', firstPaymentStatus: '', firstPaymentAmount: '', transferAmount: '' },
+      importantNotes: '',
+      orderSummary: { name: '', amount: '', monthlyInstallment: '', installmentsCount: '' },
+      submitButton: '',
+      summaryLabels: { transferAmountRequired: '', monthlyInstallment: '', totalInstallments: '', monthsCount: '' },
+      defaultNotes: '',
+      validationMessage: '',
+      whatsappTemplate: { header: '', name: '', amount: '', installmentsCount: '', monthlyInstallment: '', transferAmount: '', monthsUnit: '' },
+    },
+    priceData: [],
+    features: { title: '', subtitle: '', cards: { commitment: { title: '', description: '' }, security: { title: '', description: '' }, support: { title: '', description: '' } } },
+    faq: { questions: { downPayment: { question: '', answer: '' }, installments: { question: '', answer: '' }, transfer: { question: '', answer: '' } } },
+    footer: { company: { name: '', description: '' }, quickLinks: { title: '', home: '', products: '', howItWorks: '', faq: '' }, contact: { title: '', whatsapp: '', phone: '', email: '', emailAddress: '', address: '', addressValue: '', contactButton: '' }, legal: { copyright: '', privacy: '', terms: '' } },
+    common: { currency: '', yes: 'Yes', no: 'No', select: 'Select', selected: 'Selected', name: 'Name', amount: 'Amount', submit: 'Submit', close: 'Close', back: 'Back', next: 'Next' },
+  };
 }
