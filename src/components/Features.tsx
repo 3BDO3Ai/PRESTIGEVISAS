@@ -1,6 +1,7 @@
 'use client';
 import { ReactNode } from 'react';
 import { ShieldCheckIcon, LockClosedIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
+import { useContent } from '@/content/useContent';
 
 interface FeatureCardProps {
   icon: ReactNode;
@@ -38,37 +39,39 @@ const FeatureCard = ({ icon, title, description, color, delay = 0 }: FeatureCard
 };
 
 const Features = () => {
+  const content = useContent();
+  
   return (
     <section id="features" className="py-20 bg-gradient-to-b from-white to-light/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-secondary mb-6 arabic-text">
-            لماذا تختارنا؟
+            {content.features.title}
           </h2>
           <p className="text-xl text-primary/70 max-w-3xl mx-auto arabic-text">
-            نقدم لك خدمات مالية مبتكرة تلبي احتياجاتك بكل سهولة وأمان
+            {content.features.subtitle}
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <FeatureCard
             icon={<ShieldCheckIcon className="w-10 h-10" />}
-            title="التزام وشفافية"
-            description="الأسعار والدفعات موضحة بوضوح قبل الإرسال، مع ضمان كامل للشفافية في جميع المعاملات."
+            title={content.features.cards.commitment.title}
+            description={content.features.cards.commitment.description}
             color="accent"
             delay={100}
           />
           <FeatureCard
             icon={<LockClosedIcon className="w-10 h-10" />}
-            title="سهل وآمن"
-            description="عملية بسيطة وآمنة مع توضيح الدفعة الأولى وخياراتها، وحماية كاملة لمعلوماتك الشخصية."
+            title={content.features.cards.security.title}
+            description={content.features.cards.security.description}
             color="secondary"
             delay={200}
           />
           <FeatureCard
             icon={<ChatBubbleLeftRightIcon className="w-10 h-10" />}
-            title="دعم سريع"
-            description="تواصل فوري عبر واتساب لأي استفسار، مع فريق دعم متخصص متاح على مدار الساعة."
+            title={content.features.cards.support.title}
+            description={content.features.cards.support.description}
             color="primary"
             delay={300}
           />

@@ -1,7 +1,9 @@
 "use client";
 import Image from 'next/image';
+import { useContent } from '@/content/useContent';
 
 const Hero = () => {
+  const content = useContent();
 
   return (
   <section id="home" className="relative w-full pt-20 pb-8 bg-gradient-to-br from-white via-light/20 to-accent/5 overflow-hidden">
@@ -35,16 +37,16 @@ const Hero = () => {
           {/* Main heading with staggered animation */}
           <div className="max-w-3xl mx-auto transition-all duration-300 animate-fade-in opacity-100">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold mb-3 arabic-text leading-tight">
-              <span className="block text-secondary mb-1">سيولة مالية</span>
-              <span className="block text-gray-700 text-base md:text-lg lg:text-xl mb-1">عبارة عن سلع تشتريها أقساط</span>
-              <span className="block text-accent text-base md:text-lg lg:text-xl mb-1">من تابي او تمارا</span>
-              <span className="block text-secondary text-sm md:text-base lg:text-lg mb-1">ونوفر لك اعادة بيعها</span>
-              <span className="block text-gray-800 text-sm md:text-base lg:text-lg">ويتحولك المبلغ كاش لحسابك بشكل فوري</span>
+              <span className="block text-secondary mb-1">{content.hero.title}</span>
+              <span className="block text-gray-700 text-base md:text-lg lg:text-xl mb-1">{content.hero.subtitle}</span>
+              <span className="block text-accent text-base md:text-lg lg:text-xl mb-1">{content.hero.provider}</span>
+              <span className="block text-secondary text-sm md:text-base lg:text-lg mb-1">{content.hero.service}</span>
+              <span className="block text-gray-800 text-sm md:text-base lg:text-lg">{content.hero.transfer}</span>
             </h1>
           
             {/* Subtitle with emphasis */}
             <p className="text-sm md:text-base lg:text-lg font-semibold text-accent mb-4">
-              بدون كفيل وبدون شروط
+              {content.hero.noGuarantor}
             </p>
 
             {/* Call-to-action buttons removed per request */}

@@ -1,7 +1,12 @@
 'use client';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { useContent } from '@/content/useContent';
 
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname && pathname.startsWith('/admin')) return null;
+  const content = useContent();
   function playClickAnimation() {
     const el = document.querySelector('footer');
     if (!el) return;
@@ -27,42 +32,41 @@ const Footer = () => {
               />
             </div>
             <p className="text-light/80 text-lg leading-relaxed mb-6 arabic-text max-w-md">
-              نوفر لك سيولة مالية فورية من خلال حلول مبتكرة وآمنة، 
-              بدون كفيل وبدون شروط معقدة.
+              {content.footer.company.description}
             </p>
             <div className="flex space-x-4 space-x-reverse">
-              <a href="https://wa.me/966504428580" target="_blank" rel="noopener noreferrer" className="btn-modern bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold">
-                تواصل معنا
+              <a href={`https://wa.me/${content.footer.contact.phone}`} target="_blank" rel="noopener noreferrer" className="btn-modern bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-lg font-semibold">
+                {content.footer.contact.contactButton}
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="animate-slide-in-left" style={{animationDelay: '200ms'}}>
-            <h4 className="text-xl font-bold mb-6 text-accent">روابط سريعة</h4>
+            <h4 className="text-xl font-bold mb-6 text-accent">{content.footer.quickLinks.title}</h4>
             <ul className="space-y-4">
-              <li><a href="#home" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">الرئيسية</a></li>
-              <li><a href="#prices" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">المنتجات</a></li>
-              <li><a href="#features" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">كيف يعمل</a></li>
-              <li><a href="#faq" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">الأسئلة الشائعة</a></li>
+              <li><a href="#home" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">{content.footer.quickLinks.home}</a></li>
+              <li><a href="#prices" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">{content.footer.quickLinks.products}</a></li>
+              <li><a href="#features" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">{content.footer.quickLinks.howItWorks}</a></li>
+              <li><a href="#faq" onClick={() => playClickAnimation()} className="text-light/80 hover:text-accent transition-colors duration-300 text-lg">{content.footer.quickLinks.faq}</a></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div className="animate-slide-in-right" style={{animationDelay: '400ms'}}>
-            <h4 className="text-xl font-bold mb-6 text-accent">تواصل معنا</h4>
+            <h4 className="text-xl font-bold mb-6 text-accent">{content.footer.contact.title}</h4>
             <ul className="space-y-4">
               <li className="text-light/80 text-lg">
-                <span className="block font-semibold text-white mb-1">واتساب</span>
-                <a href="https://wa.me/966504428580" target="_blank" rel="noopener noreferrer" onClick={() => playClickAnimation()} className="underline">+966504428580</a>
+                <span className="block font-semibold text-white mb-1">{content.footer.contact.whatsapp}</span>
+                <a href={`https://wa.me/${content.footer.contact.phone}`} target="_blank" rel="noopener noreferrer" onClick={() => playClickAnimation()} className="underline">+{content.footer.contact.phone}</a>
               </li>
               <li className="text-light/80 text-lg">
-                <span className="block font-semibold text-white mb-1">البريد الإلكتروني</span>
-                <a href="mailto:info@faz3a.com" onClick={() => playClickAnimation()} className="underline">info@faz3a.com</a>
+                <span className="block font-semibold text-white mb-1">{content.footer.contact.email}</span>
+                <a href={`mailto:${content.footer.contact.emailAddress}`} onClick={() => playClickAnimation()} className="underline">{content.footer.contact.emailAddress}</a>
               </li>
               <li className="text-light/80 text-lg">
-                <span className="block font-semibold text-white mb-1">العنوان</span>
-                الرياض, المملكة العربية السعودية
+                <span className="block font-semibold text-white mb-1">{content.footer.contact.address}</span>
+                {content.footer.contact.addressValue}
               </li>
             </ul>
           </div>
@@ -71,11 +75,11 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-light/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-light/60 text-center md:text-right mb-4 md:mb-0">
-            © 2025. جميع الحقوق محفوظة.
+            {content.footer.legal.copyright}
           </p>
           <div className="flex space-x-6 space-x-reverse">
-            <a href="#" className="text-light/60 hover:text-accent transition-colors duration-300">سياسة الخصوصية</a>
-            <a href="#" className="text-light/60 hover:text-accent transition-colors duration-300">الشروط والأحكام</a>
+            <a href="#" className="text-light/60 hover:text-accent transition-colors duration-300">{content.footer.legal.privacy}</a>
+            <a href="#" className="text-light/60 hover:text-accent transition-colors duration-300">{content.footer.legal.terms}</a>
           </div>
         </div>
       </div>

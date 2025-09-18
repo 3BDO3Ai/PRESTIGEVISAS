@@ -2,12 +2,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { useContent } from '@/content/useContent';
 
 interface HeaderProps {
   title?: string;
 }
 
-export default function Header({ title = "فزعة" }: HeaderProps) {
+export default function Header({ title }: HeaderProps) {
+  const pathname = usePathname();
+  // hide header for admin pages
+  if (pathname && pathname.startsWith('/admin')) return null;
+
+  const content = useContent();
+  const defaultTitle = title || content.footer.company.name;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -41,28 +49,32 @@ export default function Header({ title = "فزعة" }: HeaderProps) {
           {/* Logo */}
           <div className="flex items-center animate-slide-in-left">
             <Link href="/" className="inline-flex items-center">
-              <Image src="/Logo.svg" alt={title} width={120} height={40} className="object-contain" />
+              <Image src="/Logo.svg" alt={defaultTitle} width={120} height={40} className="object-contain" />
             </Link>
           </div>
           
           {/* Navigation */}
           <nav className="hidden md:flex space-x-reverse space-x-8 animate-fade-in">
             <a href="#home" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-300 hover:scale-105 font-medium relative group">
-              الرئيسية
+              {content.header.navigation.home}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a href="#prices" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-300 hover:scale-105 font-medium relative group">
-              المنتجات
+              {content.header.navigation.products}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a href="#features" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-300 hover:scale-105 font-medium relative group">
-              حول
+              {content.header.navigation.about}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a href="#faq" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-300 hover:scale-105 font-medium relative group">
-              اتصل بنا
+              {content.header.navigation.contact}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
             </a>
+            <Link href="/admin" className="text-gray-400 hover:text-accent transition-all duration-300 hover:scale-105 font-medium relative group text-xs">
+              إدارة
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full"></span>
+            </Link>
           </nav>
           
           {/* Mobile menu button */}
@@ -86,10 +98,10 @@ export default function Header({ title = "فزعة" }: HeaderProps) {
       {mobileOpen && (
         <div id="mobile-menu" className="md:hidden bg-white border-t border-light shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col space-y-2">
-            <a href="#home" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">الرئيسية</a>
-            <a href="#prices" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">المنتجات</a>
-            <a href="#features" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">حول</a>
-            <a href="#faq" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">اتصل بنا</a>
+            <a href="#home" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">{content.header.navigation.home}</a>
+            <a href="#prices" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">{content.header.navigation.products}</a>
+            <a href="#features" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">{content.header.navigation.about}</a>
+            <a href="#faq" onClick={() => { playClickAnimation(); setMobileOpen(false); }} className="text-secondary/80 hover:text-accent transition-all duration-200 py-2">{content.header.navigation.contact}</a>
           </div>
         </div>
       )}
