@@ -35,14 +35,15 @@ const FinanceCalculator = ({ initialAmount }: FinanceCalculatorProps) => {
       const result = calculate(
         amountNumber,
         provider,
-        hasFirstPayment ? 'paid' : 'deduct'
+        hasFirstPayment ? 'paid' : 'deduct',
+        content.priceData // Pass dynamic price data from content
       );
       setCalculationResult(result);
     } catch (error) {
       console.error('Calculation error:', error);
       setCalculationResult(null);
     }
-  }, [amount, provider, hasFirstPayment]);
+  }, [amount, provider, hasFirstPayment, content.priceData]);
 
   return (
     <div className="bg-white border border-gray-200 p-8 rounded-2xl shadow-lg max-w-4xl mx-auto">

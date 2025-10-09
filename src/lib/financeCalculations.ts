@@ -26,8 +26,14 @@ export interface CalculationResult {
   notes: string;
 }
 
-// Price table - exact values as provided
-const PRICE_TABLE = [
+export interface PriceTableEntry {
+  productValue: number;
+  transferAmount: number;
+  firstPayment: number;
+}
+
+// Default price table - used as fallback if no dynamic data provided
+const DEFAULT_PRICE_TABLE = [
   { product: 350, transfer: 200, down: 87, months: 4 },
   { product: 500, transfer: 300, down: 125, months: 4 },
   { product: 650, transfer: 400, down: 162, months: 4 },
@@ -40,6 +46,16 @@ const PRICE_TABLE = [
   { product: 1995, transfer: 1400, down: 499, months: 4 },
   { product: 2495, transfer: 1800, down: 625, months: 4 }
 ];
+
+// Convert dynamic price data to internal format
+function convertPriceData(priceData: PriceTableEntry[]): Array<{ product: number; transfer: number; down: number; months: number }> {
+  return priceData.map(entry => ({
+    product: entry.productValue,
+    transfer: entry.transferAmount,
+    down: entry.firstPayment,
+    months: 4 // Default to 4 months
+  }));
+}
 
 // Default configuration
 const DEFAULT_CONFIG: CalculationConfig = {
@@ -71,8 +87,11 @@ function roundUpToNearestQuarter(value: number): number {
 
 // Get values from price table
 // Returns transfer, down, months and the product value from the table when available
-function getPriceTableValues(productValue: number): { product: number; transfer: number; down: number; months: number } {
-  const entry = PRICE_TABLE.find(item => item.product === productValue);
+function getPriceTableValues(
+  productValue: number,
+  priceTable: Array<{ product: number; transfer: number; down: number; months: number }>
+): { product: number; transfer: number; down: number; months: number } {
+  const entry = priceTable.find(item => item.product === productValue);
   if (entry) {
     return { product: entry.product, transfer: entry.transfer, down: entry.down, months: entry.months };
   }
@@ -82,7 +101,7 @@ function getPriceTableValues(productValue: number): { product: number; transfer:
   const down = parseFloat(roundUpToNearestQuarter(productValue * 0.25).toFixed(2));
   
   // For interpolation, find nearest values and estimate transfer
-  const sortedTable = [...PRICE_TABLE].sort((a, b) => a.product - b.product);
+  const sortedTable = [...priceTable].sort((a, b) => a.product - b.product);
   
   if (productValue < sortedTable[0].product) {
     // Below minimum, use similar ratio as first entry
@@ -153,6 +172,7 @@ export function calculate(
   productValue: number,
   providerKey: 'tabby' | 'tamara',
   downPaymentChoice: 'paid' | 'deduct',
+  priceData?: PriceTableEntry[],
   config: CalculationConfig = DEFAULT_CONFIG,
   commissionFn = defaultCommissionFn
 ): CalculationResult {
@@ -167,8 +187,11 @@ export function calculate(
     throw new Error(`${provider.name} requires upfront down payment`);
   }
 
+  // Convert price data to internal format or use default
+  const priceTable = priceData ? convertPriceData(priceData) : DEFAULT_PRICE_TABLE;
+
   // Get values from price table - months and transfer amount come from table
-  const priceTableValues = getPriceTableValues(productValue);
+  const priceTableValues = getPriceTableValues(productValue, priceTable);
   const downPayment = priceTableValues.down;
   const months = priceTableValues.months; // عدد الأشهر from table
   const baseTransferAmount = priceTableValues.transfer; // المبلغ المطلوب تحويله from table

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { invalidateContentCache } from '@/content/useContent';
 
 interface PriceItem {
   productValue: number;
@@ -47,6 +48,8 @@ export default function PriceDataManager() {
       });
 
       if (response.ok) {
+        // Invalidate the content cache so the main page will fetch fresh data
+        invalidateContentCache();
         setNotification({ type: 'success', message: 'تم حفظ بيانات الأسعار بنجاح' });
       } else {
         setNotification({ type: 'error', message: 'حدث خطأ أثناء الحفظ' });

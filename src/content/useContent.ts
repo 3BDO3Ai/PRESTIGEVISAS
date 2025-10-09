@@ -175,10 +175,14 @@ import { useEffect, useState } from 'react';
 const REMOTE_CONTENT_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content/content.json';
 
 let _cachedContent: ContentType | null = null;
+let _cacheTimestamp: number = 0;
+const CACHE_DURATION = 5000; // 5 seconds cache duration
 
 async function fetchRemoteContent(): Promise<any> {
   try {
-    const res = await fetch(REMOTE_CONTENT_URL, { cache: 'no-store' });
+    // Add timestamp to bypass browser cache
+    const timestamp = Date.now();
+    const res = await fetch(`${REMOTE_CONTENT_URL}?t=${timestamp}`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Remote content fetch failed: ${res.status}`);
     return await res.json();
   } catch (e) {
@@ -187,9 +191,17 @@ async function fetchRemoteContent(): Promise<any> {
   }
 }
 
+// Function to invalidate cache - can be called after updates
+export function invalidateContentCache(): void {
+  _cachedContent = null;
+  _cacheTimestamp = 0;
+}
+
 export function useContent(): ContentType {
   const [content, setContent] = useState<ContentType>(() => {
-    if (_cachedContent) return _cachedContent as ContentType;
+    const now = Date.now();
+    const isCacheValid = _cachedContent && (now - _cacheTimestamp) < CACHE_DURATION;
+    if (isCacheValid) return _cachedContent as ContentType;
     return getStub();
   });
 
@@ -197,9 +209,20 @@ export function useContent(): ContentType {
     let mounted = true;
 
     (async () => {
+      // Check if cache is still valid
+      const now = Date.now();
+      const isCacheValid = _cachedContent && (now - _cacheTimestamp) < CACHE_DURATION;
+      
+      if (isCacheValid) {
+        if (mounted) setContent(_cachedContent as ContentType);
+        return;
+      }
+
+      // Fetch fresh data
       const remote = await fetchRemoteContent();
       if (remote) {
         _cachedContent = remote as ContentType;
+        _cacheTimestamp = Date.now();
         if (mounted) setContent(remote as ContentType);
         return;
       }
@@ -209,6 +232,7 @@ export function useContent(): ContentType {
         const mod = await import('./content.json');
         const local = mod?.default ?? mod;
         _cachedContent = local as ContentType;
+        _cacheTimestamp = Date.now();
         if (mounted) setContent(local as ContentType);
       } catch (e) {
         // keep stub
@@ -225,10 +249,17 @@ export function useContent(): ContentType {
 
 // Hook to track loading state separately
 export function useContentLoading(): boolean {
-  const [isLoading, setIsLoading] = useState(() => !_cachedContent);
+  const [isLoading, setIsLoading] = useState(() => {
+    const now = Date.now();
+    const isCacheValid = _cachedContent && (now - _cacheTimestamp) < CACHE_DURATION;
+    return !isCacheValid;
+  });
 
   useEffect(() => {
-    if (_cachedContent) {
+    const now = Date.now();
+    const isCacheValid = _cachedContent && (now - _cacheTimestamp) < CACHE_DURATION;
+    
+    if (isCacheValid) {
       setIsLoading(false);
       return;
     }
@@ -239,6 +270,7 @@ export function useContentLoading(): boolean {
       const remote = await fetchRemoteContent();
       if (remote) {
         _cachedContent = remote as ContentType;
+        _cacheTimestamp = Date.now();
         if (mounted) setIsLoading(false);
         return;
       }
@@ -248,6 +280,7 @@ export function useContentLoading(): boolean {
         const mod = await import('./content.json');
         const local = mod?.default ?? mod;
         _cachedContent = local as ContentType;
+        _cacheTimestamp = Date.now();
         if (mounted) setIsLoading(false);
       } catch (e) {
         // Even with stub, stop loading after attempt
