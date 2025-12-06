@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ContentWrapper from "@/components/ContentWrapper";
 
-const cairo = Cairo({ 
-  subsets: ["arabic", "latin"],
+const playfair = Playfair_Display({ 
+  subsets: ["latin"],
   display: "swap",
-  variable: "--font-cairo"
+  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
+});
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "فزعة - سيولة مالية فورية",
-  description: "فزعة - نوفر لك سيولة مالية فورية من خلال حلول مبتكرة وآمنة، بدون كفيل وبدون شروط معقدة",
+  title: "Prestige Visas | Premium Visa & Immigration Consultancy",
+  description: "Your trusted partner in global visa and immigration excellence. Premium, personalised guidance for UK, Canada, Schengen, USA, Australia & beyond.",
+  keywords: "UK visa, Canada immigration, Schengen visa, USA visa, Australia PR, immigration consultant, British consultant, visa advisory",
 };
 
 export default function RootLayout({
@@ -22,13 +28,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} font-cairo antialiased bg-white`}>
-        <ContentWrapper>
-          <Header />
-          {children}
-          <Footer />
-        </ContentWrapper>
+    <html lang="en" dir="ltr">
+      <body className={`${playfair.variable} ${inter.variable} font-sans antialiased bg-white`}>
+        {children}
       </body>
     </html>
   );

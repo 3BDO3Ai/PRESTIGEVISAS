@@ -1,28 +1,31 @@
-"use client";
-
-import { useState } from "react";
-import FinanceCalculator from "@/components/FinanceCalculator";
-import Features from "@/components/Features";
-import FAQ from "@/components/FAQ";
-import PriceList from "@/components/PriceList";
-import Hero from "@/components/Hero";
+﻿import Navigation from '@/components/Navigation';
+import HeroSection from '@/components/HeroSection';
+import TrustBadges from '@/components/TrustBadges';
+import VideoSection from '@/components/VideoSection';
+import ServicesSection from '@/components/ServicesSection';
+import WhyChooseUsSection from '@/components/WhyChooseUsSection';
+import DestinationsSection from '@/components/DestinationsSection';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import ProcessSection from '@/components/ProcessSection';
+import GuaranteeSection from '@/components/GuaranteeSection';
+import CTASection from '@/components/CTASection';
+import Footer from '@/components/Footer';
 
 export default function Home() {
-  const [selectedAmount, setSelectedAmount] = useState<number | undefined>(undefined); // No default amount
-
-  const handlePriceSelection = (item: { productValue: number; transferAmount: number; firstPayment: number }) => {
-    setSelectedAmount(item.productValue);
-  };
-
   return (
-    <div className="bg-white text-primary min-h-screen">
-      <Hero />
-      <main className="container mx-auto px-4">
-        <PriceList onSelect={handlePriceSelection} />
-        <FinanceCalculator initialAmount={selectedAmount} />
-        <Features />
-        <FAQ />
-      </main>
-    </div>
+    <main className="min-h-screen bg-white">
+      <Navigation />
+      <HeroSection />
+      <TrustBadges />
+      <VideoSection />
+      <ServicesSection />
+      <WhyChooseUsSection />
+      <DestinationsSection />
+      <TestimonialsSection />
+      <ProcessSection />
+      <GuaranteeSection />
+      <CTASection />
+      <Footer />
+    </main>
   );
 }

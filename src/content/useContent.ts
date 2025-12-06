@@ -171,8 +171,12 @@ export interface ContentType {
 
 import { useEffect, useState } from 'react';
 
-// Remote Supabase public URL for content (from user)
-const REMOTE_CONTENT_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co/storage/v1/object/public/Content/content.json';
+// Remote Supabase public URL for content - constructed from environment variable
+// Falls back to /api/admin/content if not configured
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const REMOTE_CONTENT_URL = SUPABASE_URL 
+  ? `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`
+  : '/api/admin/content';
 
 let _cachedContent: ContentType | null = null;
 let _cacheTimestamp: number = 0;

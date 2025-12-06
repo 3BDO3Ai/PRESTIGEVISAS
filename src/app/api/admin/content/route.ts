@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Supabase storage endpoints and tokens. Prefer environment variables.
-const SUPABASE_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co';
-const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`;
-const STORAGE_API_URL = `${SUPABASE_URL}/storage/v1/object/Content/content.json`;
+// Helper to get environment variables with validation
+function getEnvVars() {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc5NjIwNzgsImV4cCI6MjA3MzUzODA3OH0.IyQ7QMtXRVg8R6lSaZIFnKgBZ7KBRMyuC1EaHPRnFR8';
+  if (!SUPABASE_URL || !ANON_KEY || !SERVICE_ROLE_KEY) {
+    throw new Error('Missing required Supabase environment variables. Please check your .env.local file.');
+  }
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzk2MjA3OCwiZXhwIjoyMDczNTM4MDc4fQ.FCx28QnZO_A3zOiOaB1mbii9CBtyYolrGM7NCxiDQow';
+  return {
+    SUPABASE_URL,
+    ANON_KEY,
+    SERVICE_ROLE_KEY,
+    PUBLIC_URL: `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`,
+    STORAGE_API_URL: `${SUPABASE_URL}/storage/v1/object/Content/content.json`
+  };
+}
 
 export async function GET() {
   try {
+    const { PUBLIC_URL, ANON_KEY } = getEnvVars();
     const res = await fetch(PUBLIC_URL, { headers: { apikey: ANON_KEY } });
     if (!res.ok) {
       console.error('Failed fetching remote content:', res.statusText);
@@ -26,6 +37,7 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    const { STORAGE_API_URL, SERVICE_ROLE_KEY } = getEnvVars();
     const newContent = await request.json();
     if (!newContent || typeof newContent !== 'object') {
       return NextResponse.json({ error: 'Invalid content format' }, { status: 400 });

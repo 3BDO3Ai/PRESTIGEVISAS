@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SUPABASE_URL = 'https://mgltkbcfblwvqdnmnttl.supabase.co';
-const PUBLIC_URL = `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`;
-const STORAGE_API_URL = `${SUPABASE_URL}/storage/v1/object/Content/content.json`;
+// Helper to get environment variables with validation
+function getEnvVars() {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nbHRrYmNmYmx3dnFkbm1udHRsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzk2MjA3OCwiZXhwIjoyMDczNTM4MDc4fQ.FCx28QnZO_A3zOiOaB1mbii9CBtyYolrGM7NCxiDQow';
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+    throw new Error('Missing required Supabase environment variables. Please check your .env.local file.');
+  }
+
+  return {
+    SUPABASE_URL,
+    SERVICE_ROLE_KEY,
+    PUBLIC_URL: `${SUPABASE_URL}/storage/v1/object/public/Content/content.json`,
+    STORAGE_API_URL: `${SUPABASE_URL}/storage/v1/object/Content/content.json`
+  };
+}
 
 export async function PUT(request: NextRequest) {
   try {
+    const { PUBLIC_URL, STORAGE_API_URL, SERVICE_ROLE_KEY } = getEnvVars();
     const { priceData } = await request.json();
 
     if (!Array.isArray(priceData)) {
