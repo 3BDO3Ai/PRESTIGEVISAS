@@ -19,7 +19,8 @@ export default function Navigation() {
             <a href="#home" className="text-white/80 hover:text-gold transition-colors">Home</a>
             <a href="#services" className="text-white/80 hover:text-gold transition-colors">Services</a>
             <a href="#destinations" className="text-white/80 hover:text-gold transition-colors">Destinations</a>
-            <a href="#about" className="text-white/80 hover:text-gold transition-colors">About</a>
+            <a href="#testimonials" className="text-white/80 hover:text-gold transition-colors">Testimonials</a>
+            <a href="#process" className="text-white/80 hover:text-gold transition-colors">Process</a>
             <a href="#contact" className="btn-gold text-sm">Book Consultation</a>
           </div>
           
@@ -46,7 +47,8 @@ export default function Navigation() {
             <a href="#home" className="block text-white/80 hover:text-gold py-2">Home</a>
             <a href="#services" className="block text-white/80 hover:text-gold py-2">Services</a>
             <a href="#destinations" className="block text-white/80 hover:text-gold py-2">Destinations</a>
-            <a href="#about" className="block text-white/80 hover:text-gold py-2">About</a>
+            <a href="#testimonials" className="block text-white/80 hover:text-gold py-2">Testimonials</a>
+            <a href="#process" className="block text-white/80 hover:text-gold py-2">Process</a>
             <a href="#contact" className="btn-gold inline-block text-sm mt-2">Book Consultation</a>
           </div>
         </div>

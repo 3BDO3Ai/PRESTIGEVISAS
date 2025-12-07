@@ -84,7 +84,9 @@ export default function DestinationsSection() {
                   <div className="overflow-hidden h-0 group-hover:h-8 transition-all duration-300">
                     <p className="text-gold font-medium text-sm flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       Explore Visa Options 
-                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                      <span className="inline-block group-hover:translate-x-1 transition-transform duration-300">
+                        <ArrowRightIcon className="w-4 h-4" />
+                      </span>
                     </p>
                   </div>
                 </div>

@@ -233,13 +233,14 @@ export function useContent(): ContentType {
 
       // Try dynamic import of local JSON as fallback
       try {
+        // @ts-ignore - content.json may not exist
         const mod = await import('./content.json');
         const local = mod?.default ?? mod;
         _cachedContent = local as ContentType;
         _cacheTimestamp = Date.now();
         if (mounted) setContent(local as ContentType);
       } catch (e) {
-        // keep stub
+        // keep stub - content.json doesn't exist, use stub data
       }
     })();
 
@@ -281,13 +282,14 @@ export function useContentLoading(): boolean {
 
       // Try dynamic import of local JSON as fallback
       try {
+        // @ts-ignore - content.json may not exist
         const mod = await import('./content.json');
         const local = mod?.default ?? mod;
         _cachedContent = local as ContentType;
         _cacheTimestamp = Date.now();
         if (mounted) setIsLoading(false);
       } catch (e) {
-        // Even with stub, stop loading after attempt
+        // Even with stub, stop loading after attempt - content.json doesn't exist
         if (mounted) setIsLoading(false);
       }
     })();
