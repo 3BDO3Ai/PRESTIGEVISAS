@@ -61,11 +61,11 @@ export default function DestinationsSection() {
                 className="absolute inset-0 bg-navy bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                 style={{ backgroundImage: `url(${destination.landmarkImage})` }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${destination.gradient} opacity-60 group-hover:opacity-50 transition-opacity duration-500`}></div>
+                <div className={`absolute inset-0 bg-gradient-to-br ${destination.gradient} opacity-40 group-hover:opacity-30 transition-opacity duration-500`}></div>
               </div>
 
               {/* Overlay gradient for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
 
               {/* Content */}
               <div className="absolute inset-0 p-6 flex flex-col justify-between">

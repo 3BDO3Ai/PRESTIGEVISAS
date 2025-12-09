@@ -1,6 +1,53 @@
+"use client";
 import { CheckIcon, ArrowRightIcon, WhatsAppIcon } from './Icons';
+import { useState } from 'react';
 
 export default function CTASection() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    destination: '',
+    visaType: ''
+  });
+  const [showForm, setShowForm] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Format the message for WhatsApp
+    const message = `*New Consultation Request*%0A%0A` +
+      `*Name:* ${formData.name}%0A` +
+      `*Email:* ${formData.email}%0A` +
+      `*Phone:* ${formData.phone}%0A` +
+      `*Destination:* ${formData.destination}%0A` +
+      `*Visa Type:* ${formData.visaType}`;
+    
+    // Replace with your WhatsApp business number (format: country code + number, no + or spaces)
+    const whatsappNumber = '447123456789'; // Update this with actual number
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+    
+    // Open WhatsApp
+    window.open(whatsappURL, '_blank');
+    
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      destination: '',
+      visaType: ''
+    });
+    setShowForm(false);
+  };
+
   return (
     <section id="contact" className="py-24 bg-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,16 +96,101 @@ export default function CTASection() {
                 Book a premium consultation or start your application today.
               </p>
               
-              <div className="space-y-4">
-                <a href="#" className="btn-gold w-full flex items-center justify-center gap-2 text-center">
-                  Book a Consultation
-                  <ArrowRightIcon />
-                </a>
-                <a href="#" className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded flex items-center justify-center gap-2 transition-colors">
-                  <WhatsAppIcon />
-                  WhatsApp Now
-                </a>
-              </div>
+              {!showForm ? (
+                <div className="space-y-4">
+                  <button 
+                    onClick={() => setShowForm(true)}
+                    className="btn-gold w-full flex items-center justify-center gap-2 text-center"
+                  >
+                    Book a Consultation
+                    <ArrowRightIcon />
+                  </button>
+                  <a href="https://wa.me/447123456789" target="_blank" rel="noopener noreferrer" className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded flex items-center justify-center gap-2 transition-colors">
+                    <WhatsAppIcon />
+                    WhatsApp Now
+                  </a>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Your Name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-charcoal/20 rounded focus:outline-none focus:border-gold transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email Address"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-charcoal/20 rounded focus:outline-none focus:border-gold transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone Number"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-charcoal/20 rounded focus:outline-none focus:border-gold transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <select
+                      name="destination"
+                      value={formData.destination}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-charcoal/20 rounded focus:outline-none focus:border-gold transition-colors bg-white"
+                    >
+                      <option value="">Select Destination</option>
+                      <option value="UK">United Kingdom</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Schengen">Schengen</option>
+                      <option value="USA">USA</option>
+                      <option value="Australia">Australia</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="visaType"
+                      placeholder="Visa Type (e.g., Tourist, Student, Business)"
+                      value={formData.visaType}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-charcoal/20 rounded focus:outline-none focus:border-gold transition-colors"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded flex items-center justify-center gap-2 transition-colors"
+                    >
+                      <WhatsAppIcon />
+                      Send via WhatsApp
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowForm(false)}
+                      className="px-6 py-3 border border-charcoal/20 rounded hover:bg-charcoal/5 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
               
               <p className="mt-6 text-sm text-charcoal/50 text-center">
                 Typically respond within 2 hours

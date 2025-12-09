@@ -68,7 +68,7 @@ export default function TestimonialsSection() {
           <div className="testimonial-card">
             <QuoteIcon />
             <p className="mt-4 text-charcoal/80 leading-relaxed">
-              &ldquo;British professionalism throughout. They made the PR process clear and manageable.&rdquo;
+              &ldquo;Elite professionalism throughout. They made the PR process clear and manageable.&rdquo;
             </p>
             <div className="mt-6 flex items-center gap-4">
               <div className="w-12 h-12 bg-navy rounded-full flex items-center justify-center text-gold font-serif">
