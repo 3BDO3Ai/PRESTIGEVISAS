@@ -3,5 +3,7 @@ PassengerAppRoot "/home/presiujv/prestigevisas.in"
 PassengerBaseURI "/"
 PassengerNodejs "/home/presiujv/nodevenv/prestigevisas.in/18/bin/node"
 PassengerAppType node
-PassengerStartupFile server.js
+PassengerStartupFile passenger.js
+PassengerAppEnv production
+PassengerFriendlyErrorPages off
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
