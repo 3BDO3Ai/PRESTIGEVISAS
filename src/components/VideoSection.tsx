@@ -1,18 +1,7 @@
 "use client";
-import { PlayIcon, CheckIcon } from './Icons';
-import { useState } from 'react';
+import { CheckIcon } from './Icons';
 
 export default function VideoSection() {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlayClick = () => {
-    const video = document.getElementById('intro-video') as HTMLVideoElement;
-    if (video) {
-      video.play();
-      setIsPlaying(true);
-    }
-  };
-
   return (
     <section id="video" className="py-24 bg-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,33 +40,15 @@ export default function VideoSection() {
           </div>
           
           {/* Video Container */}
-          <div className="order-1 lg:order-2 video-container aspect-video bg-gradient-to-br from-navy to-navy-800 relative overflow-hidden group">
+          <div className="order-1 lg:order-2 video-container aspect-video relative overflow-hidden">
             <video
-              id="intro-video"
               className="w-full h-full object-cover"
-              controls={isPlaying}
-              poster="/images/video-poster.jpg"
-              onPlay={() => setIsPlaying(true)}
+              controls
+              preload="metadata"
             >
               <source src="/Introduction.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-            
-            {/* Play button overlay - hidden when playing */}
-            {!isPlaying && (
-              <div 
-                onClick={handlePlayClick}
-                className="absolute inset-0 bg-gradient-to-br from-navy/60 to-navy-800/60 flex items-center justify-center cursor-pointer"
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1),transparent_70%)]"></div>
-                <div className="text-center relative z-10">
-                  <div className="w-24 h-24 bg-gold/20 rounded-full flex items-center justify-center mx-auto group-hover:bg-gold/30 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-gold/30">
-                    <PlayIcon />
-                  </div>
-                  <p className="text-white/70 mt-6 text-sm font-medium">Watch Our Introduction</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
