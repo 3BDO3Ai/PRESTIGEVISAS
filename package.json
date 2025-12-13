@@ -4,13 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=512' next build",
     "start": "node server.js",
-    "lint": "next lint",
-    "postinstall": "next build"
+    "lint": "next lint"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.x"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
