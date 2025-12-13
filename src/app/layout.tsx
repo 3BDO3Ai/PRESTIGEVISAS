@@ -20,14 +20,6 @@ export const metadata: Metadata = {
   title: "Prestige Visas | Premium Visa & Immigration Consultancy",
   description: "Your trusted partner in global visa and immigration excellence. Premium, personalised guidance for UK, Canada, Schengen, USA, Australia & beyond.",
   keywords: "UK visa, Canada immigration, Schengen visa, USA visa, Australia PR, immigration consultant, British consultant, visa advisory",
-  metadataBase: new URL('https://prestigevisas.com'),
-  openGraph: {
-    title: "Prestige Visas | Premium Visa & Immigration Consultancy",
-    description: "Your trusted partner in global visa and immigration excellence.",
-    url: 'https://prestigevisas.com',
-    siteName: 'Prestige Visas',
-    type: 'website',
-  },
 };
 
 export default function RootLayout({
