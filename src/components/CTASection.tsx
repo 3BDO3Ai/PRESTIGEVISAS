@@ -30,8 +30,8 @@ export default function CTASection() {
       `*Destination:* ${formData.destination}%0A` +
       `*Visa Type:* ${formData.visaType}`;
     
-    // Replace with your WhatsApp business number (format: country code + number, no + or spaces)
-    const whatsappNumber = '447123456789'; // Update this with actual number
+    // WhatsApp business number (format: country code + number, no + or spaces)
+    const whatsappNumber = '447307515724';
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
     
     // Open WhatsApp
@@ -105,7 +105,7 @@ export default function CTASection() {
                     Book a Consultation
                     <ArrowRightIcon />
                   </button>
-                  <a href="https://wa.me/447123456789" target="_blank" rel="noopener noreferrer" className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded flex items-center justify-center gap-2 transition-colors">
+                  <a href="https://wa.me/447307515724" target="_blank" rel="noopener noreferrer" className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded flex items-center justify-center gap-2 transition-colors">
                     <WhatsAppIcon />
                     WhatsApp Now
                   </a>
