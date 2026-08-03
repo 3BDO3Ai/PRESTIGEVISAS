@@ -1,4 +1,4 @@
-﻿import Navigation from '@/components/Navigation';
+import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import TrustBadges from '@/components/TrustBadges';
 import VideoSection from '@/components/VideoSection';
@@ -10,6 +10,7 @@ import ProcessSection from '@/components/ProcessSection';
 import GuaranteeSection from '@/components/GuaranteeSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
+import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <GuaranteeSection />
       <CTASection />
       <Footer />
+      <WhatsAppFloat />
     </main>
   );
 }
